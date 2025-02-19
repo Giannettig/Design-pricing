@@ -1,0 +1,18 @@
+---
+description: Colors to be used in pfoject
+globs: 
+---
+# Color Palette Usage
+From the palette you provided, you might use:
+- Revolt Black (#000000) – for primary text or backgrounds
+- Revolt Turquoise (#58C7C8) – for accent elements (e.g., headings, buttons, highlights)
+- Revolt Medium Gray (#D2D2D2) – for table borders, background stripes, or subtle text
+- Revolt Yellow (approx. #FFD100 / RAL 1021) – optional highlight color for important callouts
+
+Example:
+- Header background: Revolt Black (#000)
+- Table header row: Revolt Turquoise (#58C7C8)
+- Table row striping: White (#FFF) and Revolt Medium Gray (#D2D2D2)
+
+## Font use
+Montserrar

@@ -1,0 +1,1184 @@
+<!DOCTYPE html>
+<html lang="cs-CZ">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fáze projektu a cenová kalkulace - Revolt.BI</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="https://www.revolt.bi/wp-content/themes/revoltbi/dist/global.css">
+    
+  <style>
+        /* Additional pricing-specific styles */
+        .pricing-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 2rem;
+            table-layout: fixed;
+        }
+        
+        .pricing-table thead {
+            background-color: var(--wp--preset--color--primary);
+        }
+        
+        .pricing-table th,
+        .pricing-table td {
+            padding: 0.75rem;
+            border-bottom: 1px solid #D2D2D2;
+        }
+        
+        .pricing-table th:nth-child(1),
+        .pricing-table td:nth-child(1) {
+            width: 15%;
+        }
+        
+        .pricing-table th:nth-child(2),
+        .pricing-table td:nth-child(2) {
+            width: 55%;
+        }
+        
+        .pricing-table th:nth-child(3),
+        .pricing-table td:nth-child(3) {
+            width: 15%;
+            white-space: nowrap;
+        }
+        
+        .pricing-table th:nth-child(4),
+        .pricing-table td:nth-child(4) {
+            width: 15%;
+            white-space: nowrap;
+        }
+        
+        .pricing-table td:nth-child(2) {
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+        
+        .pricing-table tr:nth-child(even) {
+            background-color: #F9F9F9;
+        }
+        
+        .subtotal {
+            text-align: right;
+      font-weight: 700;
+            padding: 0.75rem;
+            background-color: #F0F0F0;
+            margin-top: -2rem;
+            margin-bottom: 2rem;
+    }
+        
+    .card {
+      border: 1px solid #D2D2D2;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      background-color: #fff;
+      border-radius: 5px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+        
+        .primary {
+            color: var(--wp--preset--color--primary);
+        }
+        
+        /* Slide styles */
+        .slide {
+            padding: 4rem 0;
+            background: #fff;
+        }
+        
+        .slide__header {
+            text-align: left;
+            margin-bottom: 3rem;
+            max-width: 1200px;
+            margin: 0 auto 3rem;
+            padding: 0 2rem;
+        }
+        
+        .slide__title {
+            font-size: 3.2rem;
+            margin-bottom: 1.5rem;
+            color: var(--wp--preset--color--primary);
+            line-height: 1.2;
+        }
+        
+        .slide__subtitle {
+            font-size: 2.2rem;
+            margin-bottom: 2.5rem;
+            color: #FFB800;
+            line-height: 1.3;
+        }
+        
+        .slide__content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        
+        .slide__text {
+            margin-bottom: 3rem;
+            line-height: 1.8;
+            font-size: 1.2rem;
+            color: #333;
+        }
+        
+        /* Updated Card styles */
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin: 3rem 0;
+            perspective: 1000px;
+        }
+        
+        .card-expandable {
+            background: #fff;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            height: 120px; /* Smaller initial height */
+            width: 100%;
+            cursor: pointer;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .card-expandable.enlarged {
+            height: 180px;
+            transform: scale(1.05);
+            z-index: 1;
+        }
+        
+        .card-expandable.active {
+            transform: rotateY(180deg) scale(1.05);
+        }
+        
+        .card-header, 
+        .card-content {
+            position: absolute;
+      width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+            border-radius: 8px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .card-header {
+            background: #fff;
+            font-family: 'Poppins', sans-serif;
+            font-size: 1rem; /* Slightly smaller font */
+            font-weight: 500;
+            color: var(--wp--preset--color--primary);
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .card-content {
+            background: #FFB800;
+            color: #141414;
+            transform: rotateY(180deg);
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            overflow: auto;
+        }
+        
+        /* Hover effects */
+        .card-expandable:hover:not(.active) .card-header {
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+        
+        .footnote {
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid #eee;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 1400px) {
+            .slide__illustration {
+                right: 0;
+                width: 300px;
+            }
+        }
+
+        @media (max-width: 1200px) {
+            .slide__illustration {
+                display: none;
+            }
+            
+            .slide__header,
+            .slide__content {
+                max-width: 800px;
+            }
+        }
+
+    @media (max-width: 768px) {
+            .cards {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .card-expandable {
+                height: 100px;
+            }
+            
+            .card-expandable.enlarged,
+            .card-expandable.active {
+                height: 160px;
+            }
+            
+            .slide__title {
+                font-size: 2.5rem;
+            }
+            
+            .slide__subtitle {
+      font-size: 1.8rem;
+            }
+            
+            .slide__text {
+                font-size: 1.1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .cards {
+                grid-template-columns: 1fr;
+      }
+    }
+
+    /* Bar graph styles */
+    .graph-container {
+        max-width: 800px;
+        margin: 4rem auto;
+        padding: 0;
+        position: relative;
+    }
+    
+    .graph-title {
+        font-size: 2rem;
+        color: var(--wp--preset--color--primary);
+      margin-bottom: 1rem;
+        text-align: left;
+        font-weight: 500;
+    }
+    
+    .graph-subtitle {
+        font-size: 1rem;
+        color: #666;
+        margin-bottom: 3rem;
+        font-style: italic;
+    }
+    
+    .bar-graph {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        position: relative;
+        padding: 0 4rem 0 0; /* Space for values */
+    }
+    
+    .bar-wrapper {
+        flex: 1;
+        height: 40px;
+        border-radius: 6px; /* Rounded edges */
+        overflow: visible;
+        position: relative;
+        background: transparent;
+    }
+    
+    .bar {
+        height: 100%;
+        background: #FFB800;
+        width: 0;
+        transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+        display: flex;
+        align-items: center;
+        padding: 0 1rem;
+        justify-content: space-between;
+        position: relative;
+        border-radius: 6px; /* Rounded edges */
+    }
+    
+    .bar-label {
+        color: #333;
+        font-weight: 500;
+        white-space: nowrap;
+        z-index: 1;
+    }
+    
+    .bar-value {
+        position: absolute;
+        right: -4rem;
+        color: #333;
+        font-weight: 500;
+        white-space: nowrap;
+    }
+    
+    /* Highlight IT projects - only change color */
+    .bar-item.highlight .bar {
+        background: #58C7C8;
+        height: 40px; /* Same as others */
+        margin: 0; /* Remove margin */
+    }
+    
+    .graph-source {
+        margin-top: 2rem;
+        padding-top: 1rem;
+        border-top: 1px solid #eee;
+        font-size: 0.9rem;
+        color: #666;
+        font-style: italic;
+    }
+    
+    /* Add decorative elements */
+    .graph-container::before {
+        content: '';
+        position: absolute;
+        left: -2rem;
+        top: 0;
+        bottom: 0;
+        width: 1px;
+        background: #eee;
+    }
+    
+    .bar-graph::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        right: 4rem;
+        bottom: -1rem;
+        height: 1px;
+        background: #eee;
+    }
+
+    .solution-text {
+        font-size: 1.1rem;
+        line-height: 1.8;
+        margin: 2rem 0;
+    }
+    
+    .highlight-text {
+        color: var(--wp--preset--color--primary);
+        font-weight: 500;
+        font-size: 1.2rem;
+        margin: 2rem 0;
+        padding: 1rem;
+        border-left: 4px solid #58C7C8;
+        background: rgba(88,199,200,0.05);
+    }
+    
+    .process-section {
+        margin: 3rem 0;
+    }
+    
+    .process-section h3 {
+        color: var(--wp--preset--color--primary);
+      margin-bottom: 1rem;
+    }
+
+    .phase-description {
+        margin: 1.5rem 0;
+        padding: 1rem;
+        background: #f8f8f8;
+        border-radius: 4px;
+        font-size: 1rem;
+        line-height: 1.6;
+    }
+
+    .solution-block {
+        background: linear-gradient(45deg, #f8f9fa, #fff);
+        padding: 4rem 0;
+        padding-bottom: 2rem; /* Reduce bottom padding */
+    }
+
+    .solution-comparison {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+        margin: 3rem 0;
+    }
+
+    .comparison-item {
+        padding: 2rem;
+        border-radius: 8px;
+        background: #fff;
+        box-shadow: 0 2px 15px rgba(0,0,0,0.08);
+    }
+
+    .comparison-item.wrong {
+        border-left: 4px solid #ff4444;
+    }
+
+    .comparison-item.right {
+        border-left: 4px solid #58C7C8;
+    }
+
+    .comparison-item h3 {
+        font-size: 1.2rem;
+        margin-bottom: 1rem;
+        color: var(--wp--preset--color--primary);
+    }
+
+    .comparison-item .price {
+        margin-top: 1rem;
+        font-weight: 500;
+    }
+
+    .cta-box {
+        background: #f8f9fa;
+        padding: 2rem;
+        border-radius: 8px;
+        margin: 3rem 0;
+        border-left: 4px solid #58C7C8;
+    }
+
+    .cta-box h3 {
+        color: var(--wp--preset--color--primary);
+        margin-bottom: 1.5rem;
+    }
+
+    .cta-box ul {
+        list-style: none;
+        padding: 0;
+        margin: 0 0 2rem 0;
+    }
+
+    .cta-box li {
+      margin-bottom: 1rem;
+        font-size: 1.1rem;
+    }
+
+    .cta-button-wrapper,
+    .cta-button {
+        display: none;
+    }
+
+    .benefits-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1.5rem;
+        margin-top: 1.5rem;
+    }
+
+    .benefit-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
+    .checkmark {
+        color: #58C7C8;
+        font-weight: bold;
+        font-size: 1.2rem;
+    }
+
+    .benefit-item p {
+        margin: 0;
+        font-size: 0.95rem;
+        line-height: 1.4;
+    }
+
+    .block.block--gray {
+        margin-top: 0; /* Remove margin between sections */
+    }
+
+    @media (max-width: 992px) {
+        .benefits-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @media (max-width: 576px) {
+        .benefits-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .solution-approach {
+        margin: 4rem 0;
+        padding: 2rem;
+        background: rgba(88,199,200,0.05);
+        border-radius: 8px;
+    }
+    
+    .solution-approach h3 {
+        color: var(--wp--preset--color--primary);
+        font-size: 2rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .solution-approach p {
+        font-size: 1.4rem;
+        line-height: 1.6;
+        color: #333;
+    }
+
+    @media (max-width: 768px) {
+        .solution-approach h3 {
+            font-size: 1.8rem;
+      }
+        
+        .solution-approach p {
+            font-size: 1.2rem;
+      }
+    }
+
+    /* Make all paragraph text larger */
+    .slide__content p,
+    .solution-text p,
+    .phase-description p,
+    .comparison-item p,
+    .benefit-item p {
+        font-size: 1.2rem;
+        line-height: 1.6;
+        color: #333;
+    }
+
+    /* Keep the larger size in the solution approach */
+    .solution-approach p {
+        font-size: 1.4rem;
+        line-height: 1.6;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .slide__content p,
+        .solution-text p,
+        .phase-description p,
+        .comparison-item p,
+        .benefit-item p {
+            font-size: 1.1rem;
+        }
+
+        .solution-approach p {
+            font-size: 1.2rem;
+        }
+    }
+
+    .symptoms-section {
+        background: #f8f9fa;
+        padding: 4rem 0;
+        position: relative;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        margin: 4rem 0;
+    }
+
+    .symptoms-content {
+        display: flex;
+        flex-direction: column;
+        gap: 3rem;
+    }
+
+    .symptoms-header {
+        text-align: center;
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .symptoms-header h2 {
+        margin-bottom: 1.5rem;
+    }
+
+    .symptoms-header p {
+        font-size: 1.2rem;
+        line-height: 1.6;
+        color: #333;
+    }
+
+    .symptoms-cards {
+        background: #fff;
+        padding: 3rem;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    }
+
+    @media (max-width: 992px) {
+        .symptoms-section {
+            padding: 3rem 0;
+        }
+
+        .symptoms-cards {
+            padding: 2rem;
+        }
+    }
+  </style>
+</head>
+<body>
+    <div class="wrapper">
+        <div class="header">
+            <div class="container">
+                <div class="header__inner">
+                    <a class="header__logo" href="https://www.revolt.bi">
+                        <img src="https://www.revolt.bi/wp-content/themes/revoltbi/img/logo.svg" width="182" height="49" alt="Revolt.BI">
+                    </a>
+                    <ul id="menu-hlavni-menu" class="header__menu">
+                        <li id="menu-item-6616" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-6616"><a href="https://www.revolt.bi/ai/">AI</a></li>
+                        <li id="menu-item-762" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children menu-item-762"><a href="https://www.revolt.bi/sluzby/technologicke-reseni/">Technologická řešení</a>
+                            <ul class="sub-menu">
+                                <li id="menu-item-7376" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-7376"><a href="https://www.revolt.bi/migrace-do-cloudu/">Migrace do Cloudu</a></li>
+                                <li id="menu-item-2133" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2133"><a href="https://www.revolt.bi/sluzby/technologicke-reseni/data-science/">Data Science</a></li>
+                                <li id="menu-item-2132" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2132"><a href="https://www.revolt.bi/sluzby/technologicke-reseni/data-end-to-endmanagement/">Data end-to-end Management</a></li>
+                            </ul>
+                        </li>
+                        <li id="menu-item-761" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children menu-item-761"><a href="https://www.revolt.bi/sluzby/business-reseni/">Business řešení</a>
+                            <ul class="sub-menu">
+                                <li id="menu-item-6074" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-6074"><a href="https://www.revolt.bi/datova-strategie/">Datová strategie</a></li>
+                                <li id="menu-item-2131" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2131"><a href="https://www.revolt.bi/sluzby/technologicke-reseni/businessove-dashboardy/">Businessové Dashboardy</a></li>
+                                <li id="menu-item-4821" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4821"><a href="https://www.revolt.bi/sluzby/business-reseni/zero-to-hero-cco/">Řešení pro obchodní ředitele</a></li>
+                                <li id="menu-item-2129" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2129"><a href="https://www.revolt.bi/sluzby/business-reseni/retail/">Retail</a></li>
+                                <li id="menu-item-2128" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2128"><a href="https://www.revolt.bi/sluzby/business-reseni/e-commerce/">E-commerce</a></li>
+                                <li id="menu-item-5744" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-5744"><a href="https://www.revolt.bi/sluzby/business-reseni/customer-experience/">Customer Experience</a></li>
+                                <li id="menu-item-4421" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4421"><a href="https://www.revolt.bi/sluzby/business-reseni/mentoring/">Mentoring</a></li>
+                            </ul>
+                        </li>
+                        <li id="menu-item-769" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-769"><a href="#">Technologie</a>
+                            <ul class="sub-menu">
+                                <li id="menu-item-763" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-763"><a href="https://www.revolt.bi/technologie/tableau/">Tableau</a></li>
+                                <li id="menu-item-914" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-914"><a href="https://www.revolt.bi/technologie/snowflake/">Snowflake</a></li>
+                                <li id="menu-item-765" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-765"><a href="https://www.revolt.bi/technologie/keboola/">Keboola</a></li>
+                                <li id="menu-item-766" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-766"><a href="https://www.revolt.bi/technologie/gooddata/">GoodData</a></li>
+                                <li id="menu-item-1525" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1525"><a href="https://www.revolt.bi/sluzby/technologicke-reseni/google-cloud/">Google Cloud</a></li>
+                                <li id="menu-item-767" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-767"><a href="https://www.revolt.bi/technologie/dbt/">dbt</a></li>
+                            </ul>
+                        </li>
+                        <li id="menu-item-263" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-263"><a href="https://www.revolt.bi/pripadove-studie/">Případové studie</a></li>
+                        <li id="menu-item-27" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children menu-item-27"><a href="https://www.revolt.bi/o-nas/">O nás</a>
+                            <ul class="sub-menu">
+                                <li id="menu-item-23" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-23"><a href="https://www.revolt.bi/sluzby/business-reseni/agency-vs-in-house/">Proč agentura?</a></li>
+                                <li id="menu-item-2143" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2143"><a href="https://www.revolt.bi/o-nas/aktuality/">Články &amp; novinky</a></li>
+                                <li id="menu-item-4235" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4235"><a href="https://www.revolt.bi/o-nas/e-booky-a-webinare/">E-booky &amp; webináře</a></li>
+                                <li id="menu-item-3985" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3985"><a href="https://www.revolt.bi/o-nas/slovnik-pojmu/">Slovník pojmů</a></li>
+                                <li id="menu-item-6933" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-6933"><a href="https://www.revolt.bi/en/insane-data-podcast/">Podcast</a></li>
+                                <li id="menu-item-25" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-25"><a href="https://www.revolt.bi/o-nas/kariera/">Kariéra</a></li>
+                            </ul>
+                        </li>
+                        <li id="menu-item-26" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-26"><a href="https://www.revolt.bi/kontakt/">Kontakt</a></li>
+                        <li id="menu-item-2985-en" class="lang-item lang-item-6 lang-item-en lang-item-first menu-item menu-item-type-custom menu-item-object-custom menu-item-2985-en">
+                            <a href="/pricing.html" hreflang="en-GB" lang="en-GB">
+                                <img src="https://www.revolt.bi/wp-content/themes/revoltbi/img/en_GB.svg" alt="English">
+                            </a>
+                        </li>
+                    </ul>
+                    <button class="header__hamburger hamburger">
+                        <span class="hamburger-box">
+                            <span class="hamburger-inner"></span>
+                        </span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide Section (Now First) -->
+        <div class="slide">
+            <div class="slide__header">
+                <h1 class="slide__title">Vytvořte svou AI aplikaci správně s Revolt BI</h1>
+                <h2 class="slide__subtitle">2 ze 3 IT projektů selžou – úspěch je anomálie, ne standard</h2>
+            </div>
+            
+            <div class="slide__content">
+               
+                    <p>Výzkum Benta Flyvbjerga na 5 392 IT projektech ukazuje, že 66 % IT projektů překročí své původní rozpočty 3–4×. To znamená, že pokud byl projekt původně odhadován na 1 milion Kč, často končí na 3–4 milionech Kč a trvá 5–10× déle, než se očekávalo. Míra chyb roste exponenciálně—rozsáhlé IT projekty (podnikový software, vládní systémy atd.) mají tendenci mít ještě vyšší míru selhání a násobky rozpočtu.</p>
+                   
+              
+                        <div class="graph-container">
+                            <h2 class="graph-title">Překročení nákladů dle odvětví</h2>
+                            <p class="graph-subtitle">Analýza překročení rozpočtů u velkých projektů napříč odvětvími zdroj. Benta Flyvbjerg, Oxford University </p>
+                            <div class="bar-graph">
+                                <div class="bar-item">
+                                    <div class="bar-wrapper">
+                                        <div class="bar" data-percentage="157">
+                                            <span class="bar-label">Olympijské hry</span>
+                                            <span class="bar-value">157%</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="bar-item">
+                                    <div class="bar-wrapper">
+                                        <div class="bar" data-percentage="75">
+                                            <span class="bar-label">Vodní elektrárny</span>
+                                            <span class="bar-value">75%</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="bar-item highlight">
+                                    <div class="bar-wrapper">
+                                        <div class="bar" data-percentage="73">
+                                            <span class="bar-label">IT projekty</span>
+                                            <span class="bar-value">73%</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="bar-item">
+                                    <div class="bar-wrapper">
+                                        <div class="bar" data-percentage="62">
+                                            <span class="bar-label">Budovy</span>
+                                            <span class="bar-value">62%</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="bar-item">
+                                    <div class="bar-wrapper">
+                                        <div class="bar" data-percentage="60">
+                                            <span class="bar-label">Letectví</span>
+                                            <span class="bar-value">60%</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="bar-item">
+                                    <div class="bar-wrapper">
+                                        <div class="bar" data-percentage="16">
+                                            <span class="bar-label">Silnice</span>
+                                            <span class="bar-value">16%</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="symptoms-section">
+                    <div class="container">
+                        <div class="container-small">
+                            <div class="symptoms-content">
+                                <div class="symptoms-header">
+                                    <h2 class="slide__subtitle">Symptomy už asi znáte:</h2>
+                                    <p>Ve skutečnosti tyto problémy často pramení z nedostatečné přípravy. Neznámé technické výzvy, rozšiřování rozsahu a příliš optimistické odhady signalizují, že vývojový tým nevěnoval dostatečné úsilí pochopení výzev a nezbytných funkcionalit.</p>
+                                </div>
+                                <div class="symptoms-cards">
+                                    <div class="cards">
+                                        <div class="card-expandable">
+                                            <div class="card-header">Nesoulad cílů</div>
+                                            <div class="card-content">
+                                                <p>Místo subjektivních představ o výsledku projektu je nutné mít jasně definované, měřitelné cíle. Pokud vedení očekává úsporu 30% nákladů, ale projekt cílí na zlepšení zákaznické zkušenosti, nemůže dopadnout dobře.</p>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="card-expandable">
+                                            <div class="card-header">Rozšiřování rozsahu</div>
+                                            <div class="card-content">
+                                                <p>Každá nová funkcionalita znamená exponenciální nárůst složitosti. Přidání "jen malé funkce" často vyžaduje změny napříč celým systémem. Proto je lepší začít s minimální verzí a postupně ji rozšiřovat na základě reálné zpětné vazby.</p>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="card-expandable">
+                                            <div class="card-header">Nereálný rozpočet</div>
+                                            <div class="card-content">
+                                                <p>Projekt byl prodán za cenu, za kterou ho lze dodat pouze v ideálním scénáři. Takový scénář ale nikdy nenastane - vždy se objeví neočekávané komplikace, změny požadavků nebo technické problémy. Realistický rozpočet musí obsahovat rezervu minimálně 30%.</p>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="card-expandable">
+                                            <div class="card-header">Chybějící referenční prognózování</div>
+                                            <div class="card-content">
+                                                <p>Místo dotazování osoby, která nikdy podobný projekt nedokončila, je daleko přesnější podívat se na data z dokončených projektů. Pokud firmám vaší velikosti trvá implementace SAP v průměru 3 roky a stojí miliony dolarů, je velmi nepravděpodobné, že budete výjimkou.</p>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="card-expandable">
+                                            <div class="card-header">Špatné řízení stakeholderů</div>
+                                            <div class="card-content">
+                                                <p>Každý stakeholder má jiné priority a očekávání. IT chce moderní technologie, finance nízké náklady, uživatelé jednoduchost. Bez aktivního řízení těchto protichůdných zájmů vzniká systém, který nesplňuje ničí požadavky.</p>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="card-expandable">
+                                            <div class="card-header">Podceňování testování</div>
+                                            <div class="card-content">
+                                                <p>Testování a nasazení často zabere více času než samotný vývoj. Bezpečnostní audity, výkonnostní testy, školení uživatelů a migrace dat jsou kritické fáze, které nelze uspěchat. Jejich podcenění vede k problémům v produkci a nespokojeným uživatelům.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="container">
+                <div class="container-small">
+                    <h2 class="primary">Prototypování a rychlá iterace jsou klíčem k úspěchu</h2>
+                    
+                    <div class="solution-text">
+                        <p>Společnosti, které vynikají v IT—a stále častěji i v jiných odvětvích jako Meta nebo SpaceX—chápou, že dokonalý plán na papíře neexistuje. Projekty uspějí, když rychlé iterace pomáhají týmům a zákazníkům získávat zkušenosti a rychle se vyhnout problémům.</p>
+                        <div class="solution-approach">
+                            <p>Abychom ušetřili peníze a iterovali co nejrychleji směrem ke správnému produktu, následujeme jasný, krok za krokem proces. Na konci každého kroku validujeme náš postup s vámi, zajišťujeme, že náš vývojový tým i vy máte společné pochopení toho, co bude dodáno dále.</p>
+                        </div>
+                        <div class="solution-comparison">
+                            <div class="comparison-item wrong">
+                                <h3>❌ Tradiční přístup</h3>
+                                <p>Neustálé přepracování kódu kvůli "překvapením"</p>
+                                <p class="price">Náklady: 3-4× vyšší</p>
+                            </div>
+                            
+                            <div class="comparison-item right">
+                                <h3>✅ Náš přístup</h3>
+                                <p>Prototypování na papíře a wireframy</p>
+                                <p class="price">Náklady: zlomek původní ceny</p>
+                            </div>
+                        </div>
+
+                        <div class="cta-box">
+                            <h3>Proč prototypování funguje:</h3>
+                            <div class="benefits-grid">
+                                <div class="benefit-item">
+                                    <span class="checkmark">✓</span>
+                                    <p>Vidíte výsledek před začátkem nákladného vývoje</p>
+                                </div>
+                                <div class="benefit-item">
+                                    <span class="checkmark">✓</span>
+                                    <p>Validujete funkcionalitu s reálnými uživateli</p>
+                                </div>
+                                <div class="benefit-item">
+                                    <span class="checkmark">✓</span>
+                                    <p>Minimalizujete nákladné změny v pozdějších fázích</p>
+                                </div>
+                                <div class="benefit-item">
+                                    <span class="checkmark">✓</span>
+                                    <p>Získáváte jistotu správného směřování projektu</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+ 
+        <div class="block block--gray">
+  <div class="container">
+                <div class="container-small">
+                    <h1 class="primary">Jak postupovat:</h1>
+                    <p class="has-medium-font-size" style="margin-bottom:2rem;">
+                        Detailní rozpis fází projektu a souvisejících nákladů
+                        <br>
+                        Časové odhady jsou orientační a budou se lyšit dle komplexity projektu. Projekt je účtovaný formou time & material. 
+                    </p>
+
+                    <!-- Phase 1 -->
+    <div class="card">
+                        <h2 class="primary">Fáze 1: Požadavky klienta a obchodní analýza</h2>
+                        <div class="phase-description">
+                            <p>V této fázi shromažďujeme všechny nápady a požadavky, abychom pochopili maximální potenciál projektu bez rozpočtových omezení. Následně validujeme proveditelnost a definujeme kritické požadavky.</p>
+                        </div>
+                        <table class="pricing-table">
+        <thead>
+          <tr>
+            <th>Krok</th>
+            <th>Popis</th>
+                                    <th>MD</th>
+            <th>Cena (CZK)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1) Workshop nápadů</td>
+                                    <td>Shromáždění všech nápadů a funkčních požadavků od stakeholderů. Cílem je pochopit maximální potenciál bez rozpočtových omezení.</td>
+                                    <td>0,5 – 2</td>
+                                    <td>7 500 – 30 000</td>
+          </tr>
+          <tr>
+            <td>2) Validace rozsahu</td>
+                                    <td>Identifikace kritických požadavků, ověření proveditelnosti a (pokud je to relevantní) provedení průzkumu trhu pro pochopení cílových skupin a konkurence.</td>
+                                    <td>0,5</td>
+                                    <td>7 500</td>
+          </tr>
+          <tr>
+                                    <td>3) Technologický návrh</td>
+                                    <td>Výběr předběžných technologií, ověření dostupnosti dat, vyhodnocení využití cloudu a určení integračních potřeb.</td>
+                                    <td>1</td>
+                                    <td>15 000</td>
+          </tr>
+          <tr>
+            <td>4) Předběžné plánování projektu</td>
+                                    <td>Definice priorit pro funkce produktu (PoC/MVP/Prototyp/Produkce/Škálování) pro zkrácení doby vývoje.</td>
+                                    <td>0,5</td>
+                                    <td>7 500</td>
+          </tr>
+        </tbody>
+      </table>
+                        <div class="subtotal">Mezisoučet Fáze 1: 2,5 – 4 MD | 37 500 – 60 000 CZK bez DPH</div>
+    </div>
+
+                    <!-- Phase 2 -->
+    <div class="card">
+                        <h2 class="primary">Fáze 2: UX Design</h2>
+                        <div class="phase-description">
+                            <p>V této části analýzy procházíme funkcionalitu systému a validujeme ji před začátkem kódování. Cílem je mít co nejjasnější představu o finálním produktu a otestovat ho maximálně před velkou investicí do vývoje.</p>
+                        </div>
+                        <table class="pricing-table">
+        <thead>
+          <tr>
+            <th>Krok</th>
+            <th>Popis</th>
+                                    <th>MD</th>
+            <th>Cena (CZK)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+                                    <td>5) Uživatelské cíle</td>
+                                    <td>Definice uživatelských cílů aplikace pro zajištění potřeb uživatelů (např. online nákup, definice rolí jako student/učitel nebo čtenář/editor).</td>
+            <td>1</td>
+            <td>15 000</td>
+          </tr>
+          <tr>
+            <td>6) Tok úloh</td>
+                                    <td>Vymezení kroků potřebných k dosažení uživatelského cíle (např. výběr produktu, přidání do košíku, potvrzení objednávky, platba, dokončení).</td>
+                                    <td>2</td>
+                                    <td>30 000</td>
+          </tr>
+          <tr>
+                                    <td>7) Uživatelský tok / Wire Flow</td>
+                                    <td>Vytvoření hrubé reprezentace obrazovek potřebných pro uživatelské kroky. Vývoj klikacího prototypu (např. ve Figmě) pro včasnou validaci uživateli.</td>
+                                    <td>3 – 5</td>
+                                    <td>45 000 – 75 000</td>
+          </tr>
+        </tbody>
+      </table>
+                        <div class="subtotal">Mezisoučet Fáze 2: 6 – 8 MD | 90 000 – 120 000 CZK bez DPH</div>
+    </div>
+
+                    <!-- Phase 3 -->
+    <div class="card">
+                        <h2 class="primary">Fáze 3: Nastavení projektu</h2>
+                        <div class="phase-description">
+                            <p>V této fázi definujeme architekturu, vytváříme detailní plán projektu a zajišťujeme, že všechny role a procesy jsou jasně definované před začátkem vývoje.</p>
+                        </div>
+                        <table class="pricing-table">
+        <thead>
+          <tr>
+            <th>Krok</th>
+            <th>Popis</th>
+                                    <th>MD</th>
+            <th>Cena (CZK)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>9) Aplikační architektura</td>
+                                    <td>Definice referenční architektury aplikace, včetně trénovacích dat pro AI, požadovaných metrik a API specifikací pro frontend.</td>
+                                    <td>3 – 4</td>
+                                    <td>45 000 – 60 000</td>
+          </tr>
+          <tr>
+                                    <td>10) Projektový plán</td>
+                                    <td>Vytvoření detailního projektového plánu s časovými odhady, milníky a metodami projektového řízení (včetně sledování času).</td>
+                                    <td>2 – 3</td>
+                                    <td>30 000 – 45 000</td>
+          </tr>
+          <tr>
+                                    <td>11) Nastavení týmu a konvence</td>
+                                    <td>Stanovení rolí, odpovědností, CI/CD praktik, standardů kódování a sledování času před zahájením vývoje.</td>
+                                    <td>1 – 2</td>
+                                    <td>15 000 – 30 000</td>
+          </tr>
+          <tr>
+                                    <td>12) Obchodní a administrativní záležitosti</td>
+                                    <td>Finalizace rozpočtů, smluv a veškeré právní/obchodní dokumentace.</td>
+                                    <td>2</td>
+                                    <td>Zdarma</td>
+          </tr>
+        </tbody>
+      </table>
+                        <div class="subtotal">Mezisoučet Fáze 3: 8 – 11 MD | 90 000 – 135 000 CZK bez DPH</div>
+    </div>
+    
+                    <!-- Total -->
+    <div class="card">
+                        <h2 class="primary">Celkem</h2>
+                        <p><strong>16,5 – 23 MD</strong> | <strong>217 500 – 315 000 CZK bez DPH</strong></p>
+                    </div>
+                </div>
+    </div>
+  </div>
+
+        <div class="footer">
+            <div class="container">
+                <div class="footer__logo">
+                    <img src="https://www.revolt.bi/wp-content/themes/revoltbi/img/logo_white.svg" alt="Revolt.BI">
+                </div>
+                <a href="https://datapunkers.revolt.bi/" class="footer__datapunkers" target="_blank">
+                    <img src="https://www.revolt.bi/wp-content/themes/revoltbi/img/datapunkers.png" alt="Datapunkers">
+                </a>
+                <div class="footer__menus">
+                    <div class="footer__menu">
+                        <div class="footerblock1">
+                            <h3 class="wp-block-heading">Kontakt</h3>
+                        </div>
+                        <div class="footerblock1">
+                            <p><strong>Revolt BI s.r.o.</strong><br>Voctářova 2449,<br>Praha 8 - Palmovka,<br>180 00</p>
+                        </div>
+                        <div class="footerblock1">
+                            <div class="wp-block-group">
+                                <div class="wp-block-group__inner-container">
+                                    <figure class="wp-block-image size-full is-resized is-style-rounded">
+                                        <img loading="lazy" decoding="async" width="400" height="400" src="https://www.revolt.bi/wp-content/uploads/2025/01/1729857682514-1.jpeg" alt="" class="wp-image-6803" style="object-fit:cover;width:50px;height:50px">
+                                    </figure>
+                                    <p><a href="mailto:info@revolt.bi">info@revolt.bi</a><br><a href="tel:00420725154325">+420 725 154 325</a></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="footer__menu">
+                        <div class="footerblock2">
+                            <h3 class="wp-block-heading">Služby</h3>
+                        </div>
+                        <div class="footerblock2">
+                            <div class="menu-footer-menu-1-container">
+                                <ul id="menu-footer-menu-1" class="menu">
+                                    <li id="menu-item-168" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-168"><a href="https://www.revolt.bi/sluzby/business-reseni/retail/">Retail</a></li>
+                                    <li id="menu-item-169" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-169"><a href="https://www.revolt.bi/sluzby/business-reseni/e-commerce/">E-commerce</a></li>
+                                    <li id="menu-item-167" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-167"><a href="https://www.revolt.bi/sluzby/technologicke-reseni/strikeforce/">Strikeforce</a></li>
+                                    <li id="menu-item-1400" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1400"><a href="https://www.revolt.bi/sluzby/technologicke-reseni/analyticka-strategie/">Analytická strategie</a></li>
+                                    <li id="menu-item-1399" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1399"><a href="https://www.revolt.bi/sluzby/technologicke-reseni/businessove-dashboardy/">Businessové dashboardy</a></li>
+                                    <li id="menu-item-1398" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1398"><a href="https://www.revolt.bi/sluzby/technologicke-reseni/data-end-to-endmanagement/">Data end to endmanagement</a></li>
+                                    <li id="menu-item-171" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-171"><a href="https://www.revolt.bi/sluzby/technologicke-reseni/data-warehouse/">Data Warehouse</a></li>
+                                    <li id="menu-item-1397" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1397"><a href="https://www.revolt.bi/sluzby/technologicke-reseni/data-science/">Data science</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="footer__menu">
+                        <div class="footerblock3">
+                            <h3 class="wp-block-heading">Technologie</h3>
+                        </div>
+                        <div class="footerblock3">
+                            <div class="menu-footer-menu-2-container">
+                                <ul id="menu-footer-menu-2" class="menu">
+                                    <li id="menu-item-182" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-182"><a href="https://www.revolt.bi/technologie/tableau/">Tableau</a></li>
+                                    <li id="menu-item-1396" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1396"><a href="https://www.revolt.bi/technologie/snowflake/">Snowflake</a></li>
+                                    <li id="menu-item-184" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-184"><a href="https://www.revolt.bi/technologie/keboola/">Keboola</a></li>
+                                    <li id="menu-item-185" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-185"><a href="https://www.revolt.bi/technologie/gooddata/">GoodData</a></li>
+                                    <li id="menu-item-1524" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1524"><a href="https://www.revolt.bi/sluzby/technologicke-reseni/google-cloud/">Google Cloud</a></li>
+                                    <li id="menu-item-186" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-186"><a href="https://www.revolt.bi/technologie/dbt/">dbt</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="footer__menu">
+                        <div class="footerblock4">
+                            <h3 class="wp-block-heading">Revolt.bi</h3>
+                        </div>
+                        <div class="footerblock4">
+                            <div class="menu-footer-menu-3-container">
+                                <ul id="menu-footer-menu-3" class="menu">
+                                    <li id="menu-item-193" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-193"><a href="https://www.revolt.bi/o-nas/">O nás</a></li>
+                                    <li id="menu-item-195" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-195"><a href="https://www.revolt.bi/pripadove-studie/">Případové studie</a></li>
+                                    <li id="menu-item-194" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-194"><a href="https://www.revolt.bi/privacy-policy/">Privacy policy</a></li>
+                                    <li id="menu-item-5807" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-5807"><a href="https://www.revolt.bi/cookies/">Cookies</a></li>
+                                    <li id="menu-item-6493" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-6493"><a href="https://www.revolt.bi/wp-content/uploads/2024/12/Obchodni-podminky_Revolt.BI-1.pdf">Obchodní podmínky</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="footer__menu">
+                        <div class="footerblock5">
+                            <h3 class="wp-block-heading">Kariéra</h3>
+                        </div>
+                        <div class="footerblock5">
+                            <div class="menu-footer-menu-4-container">
+                                <ul id="menu-footer-menu-4" class="menu">
+                                    <li id="menu-item-199" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-199"><a href="https://www.revolt.bi/kariera/#volna-mista">Volná místa</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="footerblock5">
+                            <div class="wp-block-group">
+                                <div class="wp-block-group__inner-container">
+                                    <figure class="wp-block-image size-large"><a href="https://www.facebook.com/revoltbi/" target="_blank" rel=" noreferrer noopener"><img loading="lazy" decoding="async" width="40" height="40" src="https://www.revolt.bi/wp-content/uploads/2023/11/revolt_facebook-icon.svg" alt="" class="wp-image-2454"></a></figure>
+                                    <figure class="wp-block-image size-large"><a href="https://github.com/RevoltBI" target="_blank" rel=" noreferrer noopener"><img loading="lazy" decoding="async" width="40" height="40" src="https://www.revolt.bi/wp-content/uploads/2023/11/revolt_github-icon.svg" alt="" class="wp-image-2455"></a></figure>
+                                    <figure class="wp-block-image size-large"><a href="https://www.linkedin.com/company/revolt-bi/" target="_blank" rel=" noreferrer noopener"><img loading="lazy" decoding="async" width="40" height="40" src="https://www.revolt.bi/wp-content/uploads/2023/11/revolt_linkedin-icon.svg" alt="" class="wp-image-2457"></a></figure>
+                                    <figure class="wp-block-image size-large"><a href="https://twitter.com/datapunkers" target="_blank" rel=" noreferrer noopener"><img loading="lazy" decoding="async" width="200" height="200" src="https://www.revolt.bi/wp-content/uploads/2023/11/revolt_twitter-icon.svg" alt="" class="wp-image-2456"></a></figure>
+                                    <figure class="wp-block-image size-large"><a href="https://www.instagram.com/revolt.bi" target="_blank" rel=" noreferrer noopener"><img loading="lazy" decoding="async" width="448" height="512" src="https://www.revolt.bi/wp-content/uploads/2023/12/square-instagram.svg" alt="" class="wp-image-2536"></a></figure>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="footer__copy">
+                    <div>© 2025 Revolt.BI</div>
+                    <a href="https://www.revolt.bi/privacy-policy/">Prohlášení o ochraně osobních údajů</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    document.querySelectorAll('.card-expandable').forEach(card => {
+        card.addEventListener('click', () => {
+            // If card is already active, just deactivate it
+            if (card.classList.contains('active')) {
+                card.classList.remove('active');
+                setTimeout(() => {
+                    card.classList.remove('enlarged');
+                }, 400);
+                return;
+            }
+            
+            // Remove active and enlarged classes from all other cards
+            document.querySelectorAll('.card-expandable').forEach(otherCard => {
+                if (otherCard !== card) {
+                    otherCard.classList.remove('active');
+                    otherCard.classList.remove('enlarged');
+                }
+            });
+            
+            // First step: enlarge
+            card.classList.add('enlarged');
+            
+            // Second step: flip after enlargement
+            setTimeout(() => {
+                card.classList.add('active');
+            }, 200);
+        });
+    });
+
+    // Bar graph animation with proportional scaling
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const bars = entry.target.querySelectorAll('.bar');
+                const maxPercentage = Math.max(...Array.from(bars).map(bar => 
+                    parseInt(bar.dataset.percentage)
+                ));
+                
+                bars.forEach(bar => {
+                    const percentage = parseInt(bar.dataset.percentage);
+                    // Scale proportionally to the maximum value
+                    const width = (percentage / maxPercentage) * 100;
+                    
+                    bar.style.width = `${width}%`;
+                    bar.classList.add('animated');
+                    
+                    // Animate the number
+                    const value = bar.querySelector('.bar-value');
+                    let current = 0;
+                    const increment = percentage / 50;
+                    const timer = setInterval(() => {
+                        current += increment;
+                        if (current >= percentage) {
+                            current = percentage;
+                            clearInterval(timer);
+                        }
+                        value.textContent = `${Math.round(current)}%`;
+                    }, 30);
+                });
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.5 });
+
+    observer.observe(document.querySelector('.bar-graph'));
+    </script>
+</body>
+</html>
